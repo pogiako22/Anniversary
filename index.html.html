@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Beautiful Girlfriend ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .hearts {
+            position: fixed;
+            top: -10px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .heart {
+            position: absolute;
+            color: rgba(255, 192, 203, 0.8);
+            font-size: 20px;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Password Lock Screen */
+        .lock-screen {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .lock-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3rem 2rem;
+            border-radius: 30px;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .lock-heart {
+            font-size: 4rem;
+            color: #e91e63;
+            margin-bottom: 1rem;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .lock-title {
+            font-size: 2rem;
+            color: #e91e63;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .lock-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .hearts-display {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .heart-box {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #f8bbd9;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(248, 187, 217, 0.2);
+            font-size: 1.5rem;
+            color: #e91e63;
+        }
+
+        .heart-box.filled {
+            background: #e91e63;
+            color: white;
+            border-color: #e91e63;
+            animation: fillHeart 0.3s ease-out;
+        }
+
+        @keyframes fillHeart {
+            0% { transform: scale(0.8); }
+            100% { transform: scale(1); }
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            max-width: 250px;
+            margin: 0 auto;
+        }
+
+        .key {
+            width: 60px;
+            height: 60px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(233, 30, 99, 0.1);
+            color: #e91e63;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .key:hover {
+            background: #e91e63;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .key:active {
+            transform: scale(0.95);
+        }
+
+        .key.special {
+            background: #e91e63;
+            color: white;
+        }
+
+        .key.special:hover {
+            background: #c2185b;
+        }
+
+        .error-message {
+            color: #e57373;
+            font-size: 1rem;
+            margin-top: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .error-message.show {
+            opacity: 1;
+        }
+
+        /* Main Content (hidden initially) */
+        .main-content {
+            display: none;
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .main-message {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 3rem;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .title {
+            font-size: 2.5rem;
+            color: #d63384;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .message {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            color: #495057;
+            margin-bottom: 2rem;
+        }
+
+        .photo-frame {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b9d, #c44569);
+            padding: 5px;
+            margin: 2rem auto;
+            position: relative;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 20px rgba(255, 107, 157, 0.5);
+            }
+            to {
+                box-shadow: 0 0 30px rgba(255, 107, 157, 0.8);
+            }
+        }
+
+        .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffeaa7, #fab1a0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: white;
+        }
+
+        .interactive-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            width: 100%;
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+
+        .love-card {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .love-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.3);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .card-emoji {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: #d63384;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .card-text {
+            color: #6c757d;
+            font-size: 1rem;
+        }
+
+        .surprise-button {
+            background: linear-gradient(45deg, #ff6b9d, #c44569);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            margin: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .surprise-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.4);
+        }
+
+        .surprise-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .surprise-button:hover::before {
+            left: 100%;
+        }
+
+        .hidden-message {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 20px;
+            margin: 2rem auto;
+            max-width: 600px;
+            border: 2px solid #ff6b9d;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background: white;
+            padding: 3rem;
+            border-radius: 30px;
+            text-align: center;
+            max-width: 500px;
+            margin: 2rem;
+            position: relative;
+            animation: popIn 0.5s ease-out;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            .lock-container { margin: 1rem; padding: 2rem 1.5rem; }
+            .title { font-size: 2rem; }
+            .message { font-size: 1.1rem; }
+            .main-message { padding: 2rem; margin: 1rem; }
+            .interactive-section { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts" id="hearts"></div>
+    
+    <!-- Password Lock Screen -->
+    <div id="lockScreen" class="lock-screen">
+        <div class="lock-container">
+            <div class="lock-heart">💖</div>
+            <h1 class="lock-title">Unlock Your Special Gift</h1>
+            <p class="lock-subtitle">Enter the special code to see your surprise!</p>
+            
+            <div class="hearts-display" id="heartsDisplay">
+                <div class="heart-box" id="heart1"></div>
+                <div class="heart-box" id="heart2"></div>
+                <div class="heart-box" id="heart3"></div>
+                <div class="heart-box" id="heart4"></div>
+            </div>
+            
+            <div class="keypad">
+                <button class="key" onclick="addDigit('1')">1</button>
+                <button class="key" onclick="addDigit('2')">2</button>
+                <button class="key" onclick="addDigit('3')">3</button>
+                <button class="key" onclick="addDigit('4')">4</button>
+                <button class="key" onclick="addDigit('5')">5</button>
+                <button class="key" onclick="addDigit('6')">6</button>
+                <button class="key" onclick="addDigit('7')">7</button>
+                <button class="key" onclick="addDigit('8')">8</button>
+                <button class="key" onclick="addDigit('9')">9</button>
+                <button class="key" onclick="clearPassword()">×</button>
+                <button class="key" onclick="addDigit('0')">0</button>
+                <button class="key special" onclick="checkPassword()">🔓</button>
+            </div>
+            
+            <div id="errorMessage" class="error-message">
+                Try again! Think about a special date... 💕
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="mainContent" class="main-content">
+        <div class="main-message">
+            <h1 class="title">Hey Beautiful! ❤️</h1>
+            <div class="photo-frame">
+                <div class="photo-placeholder">👸</div>
+            </div>
+            <p class="message">
+                I made this special page just for you because you mean the world to me. 
+                Every day with you feels like a dream come true. You make me smile, 
+                you make me laugh, and you make everything better just by being you.
+            </p>
+        </div>
+
+        <div class="interactive-section">
+            <div class="love-card" onclick="showMessage('reasons')">
+                <span class="card-emoji">💕</span>
+                <div class="card-title">Why I Love You</div>
+                <div class="card-text">Click to see all the reasons</div>
+            </div>
+
+            <div class="love-card" onclick="showMessage('memories')">
+                <span class="card-emoji">📸</span>
+                <div class="card-title">Our Memories</div>
+                <div class="card-text">Beautiful moments together</div>
+            </div>
+
+            <div class="love-card" onclick="showMessage('future')">
+                <span class="card-emoji">🌟</span>
+                <div class="card-title">Our Future</div>
+                <div class="card-text">Dreams we'll make come true</div>
+            </div>
+
+            <div class="love-card" onclick="showMessage('today')">
+                <span class="card-emoji">🌹</span>
+                <div class="card-title">Just Because</div>
+                <div class="card-text">You deserve to be celebrated</div>
+            </div>
+        </div>
+
+        <button class="surprise-button" onclick="showSurprise()">
+            ✨ Special Surprise ✨
+        </button>
+
+        <div id="hiddenMessage" class="hidden-message">
+            <h2 style="color: #d63384; margin-bottom: 1rem;">Surprise! 🎉</h2>
+            <p style="font-size: 1.2rem; color: #495057;">
+                I love you more than words can express. You're my sunshine on cloudy days, 
+                my laughter when I'm sad, and my peace when the world gets crazy. 
+                Thank you for being the most amazing girlfriend anyone could ask for! 💖
+            </p>
+        </div>
+    </div>
+
+    <!-- Popup Modal -->
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <span class="close-btn" onclick="closePopup()">&times;</span>
+            <div id="popupContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentPassword = '';
+        const correctPassword = '1618';
+
+        // Falling hearts animation
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDuration = Math.random() * 3 + 4 + 's';
+            heart.style.fontSize = Math.random() * 20 + 15 + 'px';
+            
+            document.getElementById('hearts').appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 7000);
+        }
+
+        // Create hearts periodically
+        setInterval(createHeart, 800);
+
+        // Password functions
+        function addDigit(digit) {
+            if (currentPassword.length < 4) {
+                currentPassword += digit;
+                updateHeartsDisplay();
+            }
+        }
+
+        function clearPassword() {
+            currentPassword = '';
+            updateHeartsDisplay();
+            hideError();
+        }
+
+        function updateHeartsDisplay() {
+            for (let i = 1; i <= 4; i++) {
+                const heart = document.getElementById('heart' + i);
+                if (i <= currentPassword.length) {
+                    heart.classList.add('filled');
+                    heart.innerHTML = '❤️';
+                } else {
+                    heart.classList.remove('filled');
+                    heart.innerHTML = '';
+                }
+            }
+        }
+
+        function checkPassword() {
+            if (currentPassword === correctPassword) {
+                unlockContent();
+            } else if (currentPassword.length === 4) {
+                showError();
+                setTimeout(() => {
+                    clearPassword();
+                }, 1000);
+            }
+        }
+
+        function showError() {
+            document.getElementById('errorMessage').classList.add('show');
+        }
+
+        function hideError() {
+            document.getElementById('errorMessage').classList.remove('show');
+        }
+
+        function unlockContent() {
+            document.getElementById('lockScreen').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+        }
+
+        // Show surprise message
+        function showSurprise() {
+            const hiddenMessage = document.getElementById('hiddenMessage');
+            hiddenMessage.style.display = 'block';
+            hiddenMessage.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Show different messages in popup
+        function showMessage(type) {
+            const popup = document.getElementById('popup');
+            const content = document.getElementById('popupContent');
+            
+            const messages = {
+                reasons: {
+                    title: "Why I Love You 💕",
+                    content: `
+                        <h2 style="color: #d63384; margin-bottom: 1rem;">💕 Reasons I Love You</h2>
+                        <ul style="text-align: left; font-size: 1.1rem; line-height: 2;">
+                            <li>🌟 Your beautiful smile that lights up my day</li>
+                            <li>😊 The way you laugh at my silly jokes</li>
+                            <li>💪 Your strength and how you handle everything</li>
+                            <li>🤗 Your warm hugs that make everything better</li>
+                            <li>✨ How you make ordinary moments magical</li>
+                            <li>❤️ The way you love me unconditionally</li>
+                        </ul>
+                    `
+                },
+                memories: {
+                    title: "Our Beautiful Memories 📸",
+                    content: `
+                        <h2 style="color: #d63384; margin-bottom: 1rem;">📸 Our Special Moments</h2>
+                        <p style="font-size: 1.1rem; line-height: 1.6;">
+                            🌅 Our first date and how nervous we both were<br><br>
+                            🍕 Late night food adventures and deep conversations<br><br>
+                            🎬 Movie nights cuddled up on the couch<br><br>
+                            🚗 Road trips with our favorite songs playing<br><br>
+                            🌙 Stargazing and talking about our dreams<br><br>
+                            💤 Lazy Sunday mornings in bed together
+                        </p>
+                    `
+                },
+                future: {
+                    title: "Our Amazing Future 🌟",
+                    content: `
+                        <h2 style="color: #d63384; margin-bottom: 1rem;">🌟 Dreams We'll Share</h2>
+                        <p style="font-size: 1.1rem; line-height: 1.6;">
+                            🏡 Building our perfect home together<br><br>
+                            ✈️ Traveling the world and making memories<br><br>
+                            🐕 Getting that cute dog we always talk about<br><br>
+                            🎉 Celebrating all of life's big moments<br><br>
+                            👨‍👩‍👧‍👦 Maybe starting our own little family<br><br>
+                            👴👵 Growing old together, still madly in love
+                        </p>
+                    `
+                },
+                today: {
+                    title: "You're Amazing 🌹",
+                    content: `
+                        <h2 style="color: #d63384; margin-bottom: 1rem;">🌹 Just Because You're You</h2>
+                        <p style="font-size: 1.2rem; line-height: 1.6; text-align: center;">
+                            You don't need a special occasion to be celebrated.<br><br>
+                            You're incredible every single day.<br><br>
+                            Your kindness, your beauty, your spirit -<br>
+                            everything about you amazes me.<br><br>
+                            I'm so lucky to call you mine. 💖<br><br>
+                            <strong>I love you more than you'll ever know!</strong>
+                        </p>
+                    `
+                }
+            };
+            
+            content.innerHTML = messages[type].content;
+            popup.style.display = 'flex';
+        }
+
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        // Close popup when clicking outside
+        document.getElementById('popup').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePopup();
+            }
+        });
+
+        // Allow Enter key to check password
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && document.getElementById('lockScreen').style.display !== 'none') {
+                checkPassword();
+            }
+        });
+
+        // Create initial hearts
+        for (let i = 0; i < 5; i++) {
+            setTimeout(createHeart, i * 300);
+        }
+    </script>
+</body>
+</html>
